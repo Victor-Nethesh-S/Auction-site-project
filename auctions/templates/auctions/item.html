@@ -1,0 +1,43 @@
+{%extends 'auctions/layout.html'%}
+
+{%block body%}
+    <h2>{{ list.title }}</h2>
+    {%if list.image%}
+        <img href="{{list.image}}" alt="{{ list.title }}" />
+    {%endif%}
+    <h6>Current bid: ${{ list.currentBid }}</h6>
+    {%if bidder %}
+    <p>bid by: {{bidder.user}}</p>
+    {% else %}
+    <p>No bidder yet.</p>
+    {%endif%}
+    <p>Posted by: <span class="red">{{ list.user }}</span></p>
+    {% for bid in allBids %}
+        <p>bid: {{bid.bid}}</p>
+        <p>user: {{bid.user}}</p>
+    {% endfor %}
+    {%if user.is_authenticated%}
+    <form action="{%url 'bid' list.id %}" method="POST">
+       {% csrf_token %}
+        <input type="text" placeholder="your bid" name="bid"/>
+        <input type="submit" value="bid" />
+    </form>
+    <form action="{%url 'comment' list.id %}">
+        {% csrf_token %}
+        <input type="text" name="comment" placeholder="Enter your comment"/>
+        <input type="submit" value="comment" />
+    </form>
+    <form action="{%url 'watchlist'%}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{list.id}}"/>
+        <input type="submit" name="submit" value="Add"/>
+    </form>
+    {% endif %}
+    <h2>Comments</h2>
+    {%for com in comments %}
+        <p>{{com.user}} : {{com.Comment}}</p>
+        <p>{{com.time}}</p>
+        <br>
+    {%endfor%}
+
+{%endblock%}

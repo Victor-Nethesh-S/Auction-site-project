@@ -1,0 +1,25 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+    <ul>
+        {% for list in Listings %}
+        <h2><a href="{%url 'item' list.pk%}">{{ list.title }}</a></h2>
+        {%if list.image%}
+        <img href="{{list.image}}" alt="{{ list.title }}" />
+        {%endif%}
+        {%if list.category%}
+            <p>Category: {{list.category}}</p>
+        {%endif%}
+        <h6>Current bid: ${{ list.currentBid }}</h6>
+        <p>Posted by: <span class="red">{{ list.user }}</span></p>
+        {%if user.is_authenticated%}
+        <form action="{%url 'watchlist'%}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="id" value="{{list.id}}"/>
+            <input type="submit" name="submit" value="Add"/>
+        </form>
+        {%endif%}
+        {% endfor%}
+    </ul>
+{% endblock %}

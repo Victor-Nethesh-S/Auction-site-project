@@ -1,0 +1,29 @@
+
+
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+     {% if selected_category %}
+        <h2>{{ selected_category }} Auctions</h2>
+        <ul>
+            {% for listing in auction_listings %}
+                <li>
+                    <a href="{% url 'item' listing.id %}">{{ listing.title }}</a>
+                    <!-- Display other listing details if needed -->
+                </li>
+            {% empty %}
+                <li>No Auctions in this category.</li>
+            {% endfor %}
+        </ul>
+        <a href="{% url 'category' %}">Back to Categories</a>
+    {% else %} 
+        <h2>Distinct Categories</h2>
+        <ul>
+            {% for category in Listings %}
+                <li>
+                    <a href="{%url 'category_selected' category%}">{{ category }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
