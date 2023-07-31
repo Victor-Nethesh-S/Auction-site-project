@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from .models import User, AuctionListing, Bids, Comments, WatchLists
+from .models import User, AuctionListing, Bids, Comments, WatchLists, Closed
 
 
 def index(request):
@@ -19,6 +19,25 @@ def index(request):
 
     return render(request, "auctions/index.html", {
         'Listings': AuctionListing.objects.all(),
+        'closedlistings': Closed.objects.values_list('item_id', flat=True),
+
+    })
+
+
+def close(request, pk):
+    item = AuctionListing.objects.get(id=pk)
+    winner = Bids.objects.get(item=item, bid=item.currentBid).user
+    # Closed.objects.all().delete()
+    close = Closed(winner=winner, item=item, user=item.user)
+    close.save()
+    return HttpResponseRedirect(reverse('closelist'))
+
+
+def closelist(request):
+    closed_auction_listings = AuctionListing.objects.filter(
+        closed__isnull=False)
+    return render(request, "auctions/closelist.html", {
+        'Listings': closed_auction_listings
     })
 
 
@@ -67,12 +86,16 @@ def item(request, pk):
     item = AuctionListing.objects.get(id=pk)
     bidder = Bids.objects.filter(item=item, bid=item.currentBid).first()
     allComments = Comments.objects.filter(item=item).order_by('-time')
+    closed = Closed.objects.filter(item=item).first()
+
     context = {
         'list': item,
         'comments': allComments,
     }
     if bidder:
         context['bidder'] = bidder
+    if closed:
+        context['closed'] = closed
     return render(request, "auctions/item.html", context)
 
 

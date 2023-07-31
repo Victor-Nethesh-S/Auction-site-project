@@ -34,3 +34,12 @@ class WatchLists(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     item = models.ForeignKey(
         AuctionListing, on_delete=models.CASCADE, default=1)
+
+
+class Closed(models.Model):
+    winner = models.ForeignKey(
+        User, default=1, on_delete=models.DO_NOTHING, related_name="closed_winner")
+    item = models.ForeignKey(
+        AuctionListing, default=1, on_delete=models.DO_NOTHING, unique=True)
+    user = models.ForeignKey(
+        User, default=1, on_delete=models.DO_NOTHING, related_name="closed_user")

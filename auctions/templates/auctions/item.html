@@ -16,24 +16,40 @@
         <p>bid: {{bid.bid}}</p>
         <p>user: {{bid.user}}</p>
     {% endfor %}
+    {%if not closed%}
+    {%if user == list.user%}
+        <form action="{% url 'close' list.id %}">
+            <input type="submit" value="Close Auction" />
+        </form>
+    {%endif%}
     {%if user.is_authenticated%}
     <form action="{%url 'bid' list.id %}" method="POST">
        {% csrf_token %}
         <input type="text" placeholder="your bid" name="bid"/>
         <input type="submit" value="bid" />
     </form>
-    <form action="{%url 'comment' list.id %}">
-        {% csrf_token %}
-        <input type="text" name="comment" placeholder="Enter your comment"/>
-        <input type="submit" value="comment" />
-    </form>
+    
     <form action="{%url 'watchlist'%}" method="POST">
         {% csrf_token %}
         <input type="hidden" name="id" value="{{list.id}}"/>
         <input type="submit" name="submit" value="Add"/>
     </form>
     {% endif %}
+    {% else %}
+        {% if user == closed.winner %}
+            <h1>You won the item {{closed.winner}}</h1>
+        {% else %}
+            <h1>This item is closed by {{closed.user}}</h1>
+        {%endif%}
+    {%endif%}
     <h2>Comments</h2>
+    {% if user.is_authenticated %}
+    <form action="{%url 'comment' list.id %}">
+        {% csrf_token %}
+        <input type="text" name="comment" placeholder="Enter your comment"/>
+        <input type="submit" value="comment" />
+    </form>
+    {%endif%}
     {%for com in comments %}
         <p>{{com.user}} : {{com.Comment}}</p>
         <p>{{com.time}}</p>

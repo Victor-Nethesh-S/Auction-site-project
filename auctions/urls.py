@@ -15,6 +15,8 @@ urlpatterns = [
     path('category/', views.category, name='category'),
     path('category/<str:selected_category>/',
          views.category_selected, name='category_selected'),
+    path('close/<int:pk>/', views.close, name='close'),
+    path('closelist', views.closelist, name='closelist'),
 
 
 ]
