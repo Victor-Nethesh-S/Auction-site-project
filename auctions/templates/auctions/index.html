@@ -7,7 +7,7 @@
             {% if list.id not in closedlistings %}
                 <h2><a href="{%url 'item' list.pk%}">{{ list.title }}</a></h2>
                 {% if list.image %}
-                    <img href="{{list.image}}" alt="{{ list.title }}" />
+                    <img src="{{list.image}}" alt="{{ list.title }}" />
                 {% endif %}
                 {%if list.category%}
                     <p>Category: {{list.category}}</p>
