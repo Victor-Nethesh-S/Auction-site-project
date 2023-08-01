@@ -9,3 +9,8 @@ body {
 .red {
     color: red;
 }
+
+img {
+    max-width: 300px;
+    max-height: 300px;
+}
